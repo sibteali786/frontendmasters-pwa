@@ -41,4 +41,4 @@ function renderNotes() {
         li.appendChild(deleteButton);
         ul.appendChild(li);
     })
-}
+} 
