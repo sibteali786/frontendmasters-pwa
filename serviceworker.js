@@ -8,24 +8,17 @@ self.addEventListener("install",event => {
     );
 })
 
-self.addEventListener("fetch",event => {
-    if (event.reuqest.url == "http://localhost:3000/fake"){
-        const response = new Response(`Hello, I am a response ${event.request.url}`);
-        event.respondWith(response); 
-    }else {
-        // we want to try and see if the request is cached
+self.addEventListener("fetch", event => {
         event.respondWith(
-            caches.open("assets").then(cache=>{
-                cache.match(event.request).then(cachedResponse => {
-                    if (cachedResponse){
-                        // Its a cache HIT
-                        return cachedResponse
-                    }else {
-                        // Its a cache MISS
-                        return fetch(event.request)
+            caches.match(event.request)  // searching in the cache
+                .then( response => {
+                    if (response) {
+                        // The request is in the cache 
+                        return response; // cache hit
+                    } else {
+                        // We need to go to the network  
+                        return fetch(event.request);  // cache miss
                     }
                 })
-            })
-        )
-    }
-})
+        );
+    });
